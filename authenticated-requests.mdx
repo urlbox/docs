@@ -1,0 +1,89 @@
+---
+id: authenticated-requests
+title: Authenticated Requests
+description: Learn how to send authenticated requests
+---
+
+Since your API key is embedded in the `GET` URL format, this means that if your Urlbox URLs are used publicly, anyone could potentially start using your API key to make requests against the Urlbox API - and use up your quota.
+
+To prevent anonymous usage, you can use the authenticated request format, which is shown below:
+
+<UrlboxUrl>
+  https://api.urlbox.io/v1/api-key/auth-token/format?options
+</UrlboxUrl>
+
+Where:
+
+- <span className="urlbox-apikey ">api-key</span> is replaced by your Urlbox API
+  key, which you can get by <a href="/pricing">registering</a> for an account
+- <span className="urlbox-token">auth-token</span> is replaced by a hash, which is
+  generated server side by taking the `HMAC SHA1` of the query string and signing
+  it with your API secret
+- <span className="urlbox-format">format</span> is one of:
+
+  - `png`
+  - `jpg` or `jpeg`
+  - `avif`
+  - `webp`
+  - `pdf`
+  - `svg`
+  - `html`
+
+- <span className="urlbox-query">options</span> is replaced by a query string that
+  contains all of the options you want to set - for example:
+
+  - `url=example.com&full_page=true&width=300`
+
+## Generating the auth token
+
+No matter which language you are using, they will all have a method to generate a hmac-sha1 hash. We have code samples for the most popular languages available [here](./examplecode/node).
+
+A simple way to check that you have generated the correct token is to open your terminal and run the following command:
+
+```zsh
+echo -n <query string> | openssl sha1 -hmac "<YOUR SECRET KEY>"
+```
+
+Let's say we want to take a screenshot of urlbox.io and set the width option to 300px.
+
+In order to generate the token, we take the query string, which is <span className="urlbox-query">url=urlbox.io&width=300</span>, and create the auth token by using our secret key to sign a hmac-sha1 hash of it:
+
+```zsh
+echo -n "url=urlbox.io&width=300" | openssl sha1 -hmac "my_secret_key"
+$> a6f5fb4b61eaba63a4546b87c14091c9ca3fbe73
+```
+
+We then insert this token into the url path to create our authenticated URL:
+
+<UrlboxUrl>
+  https://api.urlbox.io/v1/api-key/a6f5fb4b61eaba63a4546b87c14091c9ca3fbe73/png?url=urlbox.io&width=300
+</UrlboxUrl>
+
+Because the token is a hash of the query string, whenever you change your query string, you will need to ensure that the token matches, otherwise you will get an unauthenticated error response from the API.
+
+## Forcing authenticated requests
+
+By default, unauthenticated requests are allowed when you first sign up, but you should switch over to authenticated requests as soon as you have gotten familiar with the API and it's options.
+
+By default, unauthenticated requests are allowed when you first sign up, but you should switch over to authenticated requests as soon as you have gotten familiar with the API and its options.
+
+Now, if you try to make a request to the urlbox API without an auth token:
+
+```
+GET https://api.urlbox.io/v1/api-key/png?url=urlbox.io
+```
+
+you will receive the following response:
+
+```zsh
+HTTP/2 400 Bad Request
+Content-Type: application/json
+X-Urlbox-Error-Message: Please enable tokenless requests in the dashboard or pass a valid auth token
+
+{
+  "error": {
+    "message": "Please enable tokenless requests in the dashboard or pass a valid auth token",
+    "code": "TokenlessRequestsNotEnabled"
+  }
+}
+```

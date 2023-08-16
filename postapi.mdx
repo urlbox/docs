@@ -1,0 +1,33 @@
+---
+id: postapi
+title: Post API
+description: Post options to the screenshot API
+---
+You can also `POST` options to the API and get a result asynchronously. 
+
+## Authentication
+
+The `POST` endpoint uses HTTP Basic authentication. 
+Pass your **secret** key as the username.
+
+## Usage
+
+The endpoint for POSTing options to the API is:
+
+<code className="language-bash"> https://api.urlbox.io/v1/render</code>
+
+## Required Options
+
+The endpoint accepts the same [API options](./options) as the `GET` endpoints. Options can be specified in either camelCase or snake_case. The only required options are either a `url` or a `html` payload. Options can be sent as `JSON` or `formdata`
+
+| Name        | Type             | Description |
+|:--------|:------------------------|:------|
+| **`url`**|`String`      | The fully qualified URL to a public webpage. Such as `https://htmlcsstoimage.com`. When passed this will override the html param and will generate a screenshot of the url. |
+| **`html`**|`String`         | This is the HTML you want to render. You can send an HTML snippet \(`<div>Your content</div>`\) or an entire webpage. |
+
+## Response
+
+
+## Examples
+
+curl -

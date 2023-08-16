@@ -1,0 +1,32 @@
+---
+id: nodejs
+title: Nodejs website screenshots
+description: Generate website screenshots with nodejs
+---
+
+Sample code to take website screenshots in Node.js
+
+Check out our [NPM package](https://www.npmjs.com/package/urlbox), and [Github repo](https://github.com/urlbox/urlbox-screenshots-node)
+
+```js
+// npm install urlbox --save
+
+import Urlbox from "urlbox";
+
+// Plugin your API key and secret
+const urlbox = Urlbox(YOUR_API_KEY, YOUR_API_SECRET);
+
+// Set your options
+const options = {
+  url: "github.com",
+  thumb_width: 600,
+  format: "jpg",
+  quality: 80,
+};
+
+const imgUrl = urlbox.buildUrl(options);
+// https://api.urlbox.io/v1/YOUR_API_KEY/TOKEN/jpg?url=github.com&thumb_width=600&quality=80
+
+// Now set it as the src in an img tag to render the screenshot
+<img src={imgUrl} />;
+```

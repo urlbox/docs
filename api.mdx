@@ -1,0 +1,132 @@
+---
+id: api
+title: Urlbox API Reference
+description: Technical reference for the Urlbox API
+layout: reference
+---
+
+## Intoduction
+
+Urlbox is a service that generates high quality screenshots, PDFs and other outputs from website URLs and HTML.
+
+## Base URL
+
+The base URL for all API requests is `https://api.urlbox.io`.
+
+## Authentication
+
+{/* Urlbox uses **Bearer** authentication. */}
+
+To authenticate an API request, provide your **secret** key in the `Authorization` header.
+
+```bash
+Authorization: Bearer ${YOUR_SECRET_KEY}
+```
+
+You can generate a secret key by creating a Project. When you first sign up, Urlbox automatically creates a default project for you.
+
+## Errors
+
+Errors are returned in JSON format, with a relevant status code, and a human readable `message`. A `code` will also be returned in some cases.
+
+```json caption="example error object"
+{
+  "error": {
+    "message": "Please confirm your email to continue using the API"
+    "code": "NotConfirmed"
+  }
+}
+```
+
+### Status Codes
+
+The table below lists the usual HTTP status codes that will be returned and what they represent in the context of the Urlbox API:
+
+| Code  | Description                                                                |
+| ----- | -------------------------------------------------------------------------- |
+| `200` | OK                                                                         |
+| `201` | Render created                                                             |
+| `302` | Temporary redirect - for long-running renders                              |
+| `400` | Bad Request - request was invalid                                          |
+| `401` | Unauthorized - API key is wrong                                            |
+| `429` | Too many requests - Rate limit was reached                                 |
+| `500` | Urlbox server error - Try again later                                      |
+| `502` | Bad Gateway - Service temporary unavailable                                |
+| `503` | Service Unavailable - Temporarily offline for maintenance. Try again later |
+
+### Error Codes
+
+The table below lists some of the most common error codes that may be returned in the `code` field of an error object:
+
+| Code                            | Description                                                       |
+| ------------------------------- | ----------------------------------------------------------------- |
+| `NoApiKeySupplied`              | No API key was supplied in the request                            |
+| `UserNotFoundError`             | A user for that API key could not be found                        |
+| `ApiKeyNotFound`                | The API key was not found                                         |
+| `ProjectNotFound`               | A project for the API key was not found                           |
+| `ProjectNotEnabled`             | The project is not enabled                                        |
+| `NoPlan`                        | The user currently has no plan                                    |
+| `NotConfirmed`                  | The user has not confirmed their email address                    |
+| `NotActive`                     | The user is not active (subscription has expired)                 |
+| `FeatureNotAvailableOnPlan`     | The feature is not available on the user's plan                   |
+| `InvalidOptions`                | The options supplied were invalid                                 |
+| `InvalidTtl`                    | The TTL supplied was invalid                                      |
+| `NoS3BucketConfigured`          | The user has not configured an S3 bucket for their project        |
+| `RateLimitExceededError`        | The user's rate limit has been exceeded                           |
+| `TrialUsageReached`             | The user's trial usage has been reached                           |
+| `HTMLProcessError`              | The HTML could not be processed                                   |
+| `InvalidQuery`                  | The query string was invalid                                      |
+| `NoUrlSupplied`                 | No URL was supplied in the request                                |
+| `UrlWasNotAStringError`         | The URL supplied was not a string                                 |
+| `InvalidURLExtensionError`      | The URL extension was invalid                                     |
+| `InvalidURLError`               | The URL was invalid                                               |
+| `URLDoesNotResolveError`        | The URL does not resolve to a valid IP address                    |
+| `RenderTimeoutError`            | The render timed out before it could be completed                 |
+| `TokenlessRequestsNotEnabled`   | The user has not enabled tokenless (simple/unsigned URL) requests |
+| `NoQuerySent`                   | No query was sent in the request                                  |
+| `TokenNotMatchedError`          | The token supplied did not match the token for the query string   |
+| `EngineResponseNotOkError`      | The rendering engine was not able to generate the render          |
+| `EngineAsyncResponseNotOkError` | The rendering engine was not able to generate the render (async)  |
+| `TimedOutError`                 | The request timed out                                             |
+| `NoRenderIdProvided`            | No render ID was provided (when looking up a render)              |
+| `ApiKeyWrongFormat`             | The API key was not sent in the correct format                    |
+
+## Endpoints
+
+A render is our generic term for anything that can be generated by the API, for example a screenshot is a render, a pdf is a render, so too is a video. You can create all kinds of render using the same endpoint, by specifying the options relevant to that render kind.
+
+### Create a render synchronously
+
+<SplitPane>
+  <Pane>
+    Creating a render synchronously is achieved by calling this endpoint.
+
+    This endpoint responds with `200 OK` once the render has been generated. The response body will contain a `renderUrl` key which is a temporary URL pointing to the generated render. This URL will expire after 30 days.
+
+    ### Parameters
+
+    | Name | Type | Description |
+    | ---- | ---- | ----------- |
+    | url | string | The URL to render |
+    | html | string | The HTML to render |
+    | format | string | The output format of the render. One of `png`, `jpg`,`webp`, `pdf`, `svg`, `mp4`,`webm`,`md` |
+    | width | integer | The width of the viewport in pixels |
+    | height | integer | The height of the viewport in pixels |
+
+  </Pane>
+
+  <Pane>
+    ```zsh
+    POST /v1/render/sync
+    ```
+
+    <Request>
+    {{url: "https://urlbox.io", format: "png", width: 1280, height: 720, unique:'poo'}}
+    </Request>
+
+    <Response>
+
+    </Response>
+
+  </Pane>
+</SplitPane>

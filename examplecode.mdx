@@ -1,0 +1,37 @@
+---
+id: example-code
+title: Example Code
+description: Quickly learn how to use urlbox's URL to PNG rendering API
+---
+
+Sample code is available in the following languages: [Node.js](#javascript "Take a screenshot with Node.js"), [Ruby](#ruby "Take a screenshot with Ruby"), [PHP](#php "Take a screenshot with PHP"), [Python](#python "Take a screenshot with Python"), [Java](#java "Take a screenshot with Java") and [C#](#cs "Take a screenshot with C#").  
+If you would like help integrating our API with your language please [get in touch](mailto: support@urlbox.io)
+
+## Node.js
+
+Sample code to take website screenshots in Node.js
+
+Check out our npm package [here](https://www.npmjs.com/package/urlbox) here, and on [github](https://github.com/urlbox/urlbox-screenshots-node)
+
+```javascript
+// npm install urlbox --save
+
+import Urlbox from "urlbox";
+
+// Plugin your API key and secret
+const urlbox = Urlbox(YOUR_API_KEY, YOUR_API_SECRET);
+
+// Set your options
+const options = {
+  url: "github.com",
+  thumb_width: 600,
+  format: "jpg",
+  quality: 80,
+};
+
+const imgUrl = urlbox.buildUrl(options);
+// https://api.urlbox.io/v1/YOUR_API_KEY/TOKEN/jpg?url=github.com&thumb_width=600&quality=80
+
+// Now set it as the src in an img tag to render the screenshot
+<img src={imgUrl} />;
+```

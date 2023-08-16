@@ -1,0 +1,31 @@
+---
+id: python
+title: Python website screenshots
+description: Generate website screenshots with Python and Django
+---
+
+Sample code to take website screenshots in Python
+
+```python
+# PyPi package coming soon!
+#!/usr/bin/python
+
+import hmac
+from hashlib import sha1
+
+try:
+  from urllib import urlencode
+except ImportError:
+  from urllib.parse import urlencode
+
+def urlbox(args):
+  apiKey = "xxx-xxx"
+  apiSecret = "xxx-xxx"
+  queryString = urlencode(args, True)
+  hmacToken = hmac.new(str.encode(apiSecret), str.encode(queryString), sha1)
+  token = hmacToken.hexdigest().rstrip('\n')
+  return "https://api.urlbox.io/v1/%s/%s/png?%s" % (apiKey, token, queryString)
+
+argsDict = {'url' : "twitter.com", 'thumb_width': 400}
+print(urlbox (argsDict))
+```

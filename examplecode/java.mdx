@@ -1,0 +1,90 @@
+---
+id: java
+title: Java website screenshots
+description: URL to image with Java
+---
+
+Sample code to take website screenshots in Java
+
+```java
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.HashMap;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+public class Urlbox {
+
+  private String key;
+  private String secret;
+
+  Urlbox(String api_key, String api_secret) {
+    this.key = api_key;
+    this.secret = api_secret;
+  }
+
+  // main method demos Example Usage
+  public static void main(String[] args) {
+    String urlboxKey = "your-urlbox-api-key";
+    String urlboxSecret = "your-urlbox-secret";
+
+    // Set request options
+    Map<String, Object> options = new HashMap<String, Object>();
+    options.put("width", 1280);
+    options.put("height", 1024);
+    options.put("thumb_width", 240);
+    options.put("full_page", "false");
+    options.put("force", "false");
+
+    // Create urlbox object with api key and secret
+    Urlbox urlbox = new Urlbox(urlboxKey, urlboxSecret);
+    try {
+      // Call generateUrl function of urlbox object
+      String urlboxUrl = urlbox.generateUrl("bbc.co.uk", options);
+      // Now do something with urlboxUrl.. put in img tag, etc..
+    } catch (UnsupportedEncodingException ex) {
+      throw new RuntimeException("Problem with url encoding", ex);
+    }
+  }
+
+  public String generateUrl(String url, Map<String,Object> options) throws UnsupportedEncodingException {
+
+    String encodedUrl = URLEncoder.encode(url, "UTF-8");
+    String queryString = String.format("url=%s", encodedUrl);
+
+    for (Map.Entry<String, Object> entry : options.entrySet()) {
+      String queryParam = "&"+entry.getKey()+"="+entry.getValue();
+      queryString += queryParam;
+    }
+
+    String token = generateToken(queryString, this.secret);
+    String result = String.format("https://api.urlbox.io/v1/%s/%s/png?%s", this.key, token, queryString);
+    System.out.println(result);
+    return result;
+  }
+
+  private String generateToken(String input, String key) {
+    String lSignature = "None";
+    try {
+      final Mac lMac = Mac.getInstance("HmacSHA1")
+      final SecretKeySpec lSecret = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA1")
+      lMac.init(lSecret)
+      final byte[] lDigest = lMac.doFinal(input.getBytes())
+      final StringBuilder lSignature = new StringBuilder();
+      for (byte b : lDigest) {
+        lSignature.append(String.format("%02x", b));
+      }
+      return lSignature.toString().toLowerCase()
+    } catch (NoSuchAlgorithmException lEx) {
+      throw new RuntimeException("Problems calculating HMAC", lEx)
+    } catch (InvalidKeyException lEx) {
+      throw new RuntimeException("Problems calculating HMAC", lEx)
+    }
+    return lSignature;
+  }
+}
+```

@@ -1,0 +1,51 @@
+---
+id: getting-started
+title: Getting Started
+description: Quickly learn how to use Urlbox's URL to PNG rendering API
+---
+
+The quickest way to get started with Urlbox is to use the synchronous `GET` API.
+
+## Request Format
+
+To generate your first render, send a `GET` request to the following URL:
+
+<UrlboxUrl>https://api.urlbox.io/v1/api-key/format?options</UrlboxUrl>
+
+Where:
+
+- <Highlight>api-key</Highlight> is replaced with your Urlbox API key, which you
+  can get by <a href="/pricing">registering</a> for an account
+
+- <Highlight variant="format">format</Highlight> is one of: `png` `jpg` `jpeg` `avif`
+  `webp` `pdf` `svg` `html` `md` `webm` `mp4`
+
+- <Highlight variant="query">options</Highlight> is replaced by a query string that
+  contains all of the options you want to set - for example:
+
+  - `url=example.com&full_page=true&width=300`
+
+## Response Format
+
+When you send a `GET` request in this way, the Urlbox API will return binary data as the response, with the `Content-Type` header set to the relevant MIME type for the format requested. For example, if you requested `png` format, the `Content-Type` will be `image/png` and response body will be the actual `PNG` binary data.
+
+This means that you can insert the request URL directly into an `<img>` or `<meta>` tag, and things should _just work_.
+
+~> Urlbox also accepts `HEAD` requests, in case you just want to get the response status/headers without pulling down the full response body.
+
+Let's say you want to render a `png` screenshot of `google.com` thumbnailed down to 300px wide - you could set an `<img>` tag's `src` attribute like so:
+
+```html
+<img
+  src="https://api.urlbox.io/v1/api-key/png?url=google.com&thumb_width=300"
+  alt="Urlbox API thumbnail screenshot of google.com"
+/>
+```
+
+and the result would be:
+
+<div className="doc-img center mx-auto">
+
+![urlbox.io API showing a screenshot thumbnail of google.com](https://api.urlbox.io/v1/ca482d7e-9417-4569-90fe-80f7c5e1c781/17ece442b26c8518328a5ae2b8b851359e2d4a20/png?url=google.com&thumb_width=300)
+
+</div>
